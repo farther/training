@@ -1,0 +1,24 @@
+<p><%= link_to "New Account", new_api_account_path %></p>
+<% if @account.present? %>
+  <h1>Account ID - <%= @account.number %></h1>
+  <p><%= link_to "Show Balance", api_account_balance_path(@account.number), remote: true %></p>
+  <p>
+    <%= link_to "Get Cash", api_account_get_cash_path(@account.number, sum: @sum),id: "get-cash-link", remote: true %>
+    <%= number_field_tag "sum", @sum %>
+  </p>
+  <p><%= link_to "Load Cash", api_account_load_cash_path(@account.number, cash: @cash), remote: true %></p>
+  <div class="result">
+    <h1>Result</h1>
+
+  </div>
+<% end %>
+<script>
+  $('#sum').on("keyup", function () {
+    console.log("<%= api_account_get_cash_path(@account.number) %>?sum=" + this.value);
+    $('#get-cash-link').attr('href',"<%= api_account_get_cash_path(@account.number) %>?sum=" + this.value)
+  });
+
+  $('a').on("ajax:success", function (event, data, status, xhr) {
+    $('.result').append("<p>" + JSON.stringify(data) + "</p>");
+  });
+</script>
